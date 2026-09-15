@@ -6,74 +6,107 @@
 
 Before you begin, ensure you have the following installed:
 
-- [ ] [e.g., Python 3.11+]
-- [ ] [e.g., Node.js 18+]
-- [ ] [e.g., Docker Desktop]
-- [ ] [e.g., An IBM Cloud account with watsonx.ai access]
+- [ ] Python 3.12+
+- [ ] Node.js 18+
+- [ ] Docker Desktop (for the containerised quick-start only)
+
+> **No IBM Cloud account is required for the offline demo.**
+> `WATSONX_ENABLED=false` (the default) uses only the deterministic fallback; no
+> watsonx.ai credentials are needed.
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the values:
+Copy `src/.env.example` to `.env` and review the values.
+For the offline demo **no changes are required** — the defaults already set
+`DEMO_MODE=true`, `WATSONX_ENABLED=false`, and `NETWORK_REQUIRED=false`.
 
 ```bash
-cp .env.example .env
+cp src/.env.example .env
 ```
 
-| Variable | Description | Required |
+| Variable | Description | Required for demo |
 |---|---|---|
-| `WATSONX_API_KEY` | Your IBM watsonx.ai API key | Yes |
-| `WATSONX_PROJECT_ID` | Your watsonx.ai project ID | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `SLACK_WEBHOOK_URL` | Slack webhook for alerts | No |
+| `DEMO_MODE` | `true` — use in-memory synthetic data; no DB setup needed | pre-filled `true` |
+| `WATSONX_ENABLED` | `false` — use deterministic fallback only | pre-filled `false` |
+| `NETWORK_REQUIRED` | `false` — all core logic runs locally | pre-filled `false` |
+| `WATSONX_API_KEY` | IBM watsonx.ai API key (live explanation only) | No |
+| `WATSONX_PROJECT_ID` | watsonx.ai project ID (live explanation only) | No |
+| `WATSONX_URL` | watsonx.ai endpoint URL | No |
+| `APP_PORT` | Backend listening port (default `8000`) | No |
 
-## Installation
+> `DATABASE_URL` is **not used**. ChainShield uses DuckDB `:memory:` only —
+> no PostgreSQL or external database is required.
+
+## Quick Start (Docker — recommended)
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/[your-org]/[your-repo].git
-cd [your-repo]
+# 1. Copy environment file (defaults are fine for offline demo)
+cp src/.env.example .env
+
+# 2. Start all services
+docker compose up --build
+```
+
+Access:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- API docs (Swagger): http://localhost:8000/docs
+
+### Offline Demo Mode (explicit flags)
+
+```bash
+DEMO_MODE=true \
+WATSONX_ENABLED=false \
+NETWORK_REQUIRED=false \
+docker compose up --build
+```
+
+## Local Development (without Docker)
+
+```bash
+# 1. Create and activate a Python virtual environment
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
 # 2. Install backend dependencies
-[your command — e.g.: pip install -r requirements.txt]
+pip install -r requirements.txt
 
-# 3. Install frontend dependencies (if applicable)
-[your command — e.g.: cd frontend && npm install]
+# 3. Start the backend
+uvicorn src.app.api.main:app --reload
 
-# 4. Set up the database (if applicable)
-[your command — e.g.: python manage.py migrate]
+# 4. Install and start the frontend (separate terminal)
+cd src/web && npm install && npm run dev
 ```
 
-## Running the Application
-
-```bash
-# Start the backend
-[your command — e.g.: uvicorn app.main:app --reload]
-
-# Start the frontend (in a separate terminal, if applicable)
-[your command — e.g.: cd frontend && npm run dev]
-```
-
-The application will be available at: `http://localhost:[PORT]`
+Backend: http://localhost:8000  
+Frontend: http://localhost:5173
 
 ## Running Tests
 
 ```bash
-[your test command — e.g.: pytest tests/ -v]
+python -m pytest
 ```
 
-## Quick Demo (Optional)
+All 365 tests run offline (no network, no credentials required).
 
-If you have a demo script or sample data to showcase the project quickly:
+## Preflight Check (validates offline demo readiness)
 
 ```bash
-[e.g.: python demo/seed_demo_data.py]
-[e.g.: open http://localhost:8000/demo]
+python scripts/preflight_demo.py
+python scripts/preflight_demo.py --strict   # treat WARN as FAIL
 ```
+
+Expected output: `PREFLIGHT: OK -- safe to proceed with DEMO_MODE=true.`
+
+Evidence record written to `reports/preflight_report.json`.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |---|---|
-| [e.g., `ModuleNotFoundError`] | [e.g., Run `pip install -r requirements.txt` again] |
-| [e.g., Database connection refused] | [e.g., Ensure PostgreSQL is running: `docker compose up db`] |
-| [e.g., watsonx.ai 401 error] | [e.g., Check `WATSONX_API_KEY` in your `.env` file] |
+| `ModuleNotFoundError` | Run `pip install -r requirements.txt` inside your virtual environment |
+| `uvicorn: command not found` | Run `pip install uvicorn` or prefix with `python -m uvicorn` |
+| Port 8000 already in use | Set `APP_PORT=8001` in `.env` and restart |
+| Frontend shows blank page | Ensure `npm install` ran inside `src/web/` and Vite dev server is running |
+| watsonx.ai 401 error | Check `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` in `.env` — not needed for offline demo |
+| Tests fail | Run `python -m pytest -v` to see which test failed; all tests pass offline |
