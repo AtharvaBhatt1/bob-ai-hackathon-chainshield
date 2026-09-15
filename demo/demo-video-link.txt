@@ -1,4 +1,4 @@
-https://youtu.be/your-demo-video-link-here
+https://www.youtube.com/playlist?list=PLJjcar_3genrJDlaO_qB3jaDG7lxw6ghs
 
 Replace the URL above with a link to your demo video.
 
@@ -13,3 +13,4 @@ Video requirements:
   - Must show the application running (not just slides)
   - Should walk through at least one key feature end-to-end
   - Audio narration strongly recommended
+
