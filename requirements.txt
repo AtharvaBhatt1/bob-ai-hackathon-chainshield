@@ -1,0 +1,18 @@
+# ── Core backend (FastAPI) ─────────────────────────────────────────────────
+fastapi>=0.111.0,<1.0.0
+uvicorn[standard]>=0.30.0,<1.0.0
+pydantic>=2.7.0,<3.0.0
+
+# ── Data layer ─────────────────────────────────────────────────────────────
+duckdb>=1.0.0,<2.0.0
+
+# ── Graph & routing ────────────────────────────────────────────────────────
+networkx>=3.3,<4.0
+
+# ── Testing ────────────────────────────────────────────────────────────────
+pytest>=8.2.0,<9.0.0
+httpx2>=0.1.0
+
+# ── IBM watsonx.ai — OPTIONAL (only used when WATSONX_ENABLED=true) ───────
+# Uncomment the line below if you want live Granite explanations.
+# ibm-watsonx-ai>=1.1.0,<2.0.0

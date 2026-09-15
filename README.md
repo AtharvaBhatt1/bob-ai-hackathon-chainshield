@@ -7,7 +7,7 @@
 | **Team Name** | ChainShield |
 | **Track** | AI |
 | **Team Lead** | Devanshi Shah — 25dce107@charusat.edu.in |
-| **Members** | Atharva Bhatt , Rutu Modi , Harsh AAcharya  |
+| **Members** | Atharva Bhatt , Rutu Modi , Harsh Aacharya  |
 
 ## Problem Statement
 
@@ -28,7 +28,7 @@ ChainShield is an explainable crisis-response system that converts active supply
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+|-------|-----------:|
 | Backend | Python 3.12 + FastAPI |
 | Frontend | React + TypeScript + Vite |
 | Data Processing | Polars, DuckDB, Parquet |
@@ -47,8 +47,7 @@ bob-ai-hackathon-chainshield/
 ├── .github/                      # GitHub configuration and workflows
 │   └── workflows/
 │       └── validate.yml          # Official hackathon validator
-├── .pytest_cache/                # Pytest cache
-├── bob_sessions/                 # Bob task/session evidence
+├── bob_sessions/                 # Bob task/session evidence (16 sessions)
 │   ├── 01_data_contracts.md
 │   ├── 02_synthetic_data.md
 │   ├── 03_DuckDB.md
@@ -66,7 +65,7 @@ bob-ai-hackathon-chainshield/
 │   ├── 15_application_logging.md
 │   └── 16_watsonxai.md
 ├── demo/                         # Demo artifacts
-│   ├── screenshots/              # Application screenshots
+│   ├── screenshots/              # Application screenshots (24 images)
 │   ├── demo-video-link.txt       # Demo video URL
 │   └── live-demo-url.txt         # Live demo URL or local-run declaration
 ├── docs/                         # Written documentation
@@ -76,8 +75,7 @@ bob-ai-hackathon-chainshield/
 │   ├── solution-overview.md
 │   └── template-guide.md
 ├── presentation/                 # Presentation materials
-│   ├── presentation-outline.md
-│   └── slides.pdf
+│   └── presentation-outline.md
 ├── reports/                      # Validation and generated reports
 │   └── preflight_report.json
 ├── scripts/                      # Demo and data scripts
@@ -85,22 +83,47 @@ bob-ai-hackathon-chainshield/
 │   ├── preflight_demo.py
 │   └── seed_demo.py
 ├── src/                          # Application source code
+│   ├── .env.example              # Environment variable template
 │   ├── app/                      # FastAPI backend and deterministic engines
+│   │   ├── api/                  #   REST API layer
+│   │   ├── cold_chain/           #   Cold-chain policy engine
+│   │   ├── core/                 #   Shared data models and config
+│   │   ├── evidence/             #   Audit and evidence layer
+│   │   ├── explanation/          #   watsonx.ai / fallback explanation
+│   │   ├── impact/               #   Disruption impact engine
+│   │   └── optimization/         #   OR-Tools route optimizer
 │   └── web/                      # React + TypeScript + Vite frontend
-├── tests/                        # Automated tests
+├── tests/                        # Automated tests (365 tests, all offline)
+│   ├── api/                      #   API integration tests
+│   └── unit/                     #   Unit tests
 ├── .gitignore                    # Git ignore rules
 ├── AGENTS.md                     # IBM Bob project guidance
-├── CONTRIBUTING.md               # Contribution guidelines
-├── README.md                     # Project documentation
+├── chainshield-mvp-plan.md       # MVP implementation plan
+├── CONTRIBUTING.md               # Contribution and submission guidelines
+├── docker-compose.yml            # Docker Compose orchestration
+├── Dockerfile                    # Multi-stage Docker build (backend + frontend)
+├── README.md                     # This file
 ├── requirements.txt              # Python dependencies
 └── submission.yaml               # Hackathon submission metadata
+```
 
 ## How to Run
 
-### Quick Start (Docker)
+### Prerequisites
+
+- Python 3.12+
+- Node.js 18+
+- Docker Desktop (for the containerised quick-start)
+
+> **No IBM Cloud account is required for the offline demo.**
+
+### Quick Start (Docker — recommended)
 
 ```bash
-cp .env.example .env
+# 1. Copy environment file (defaults are fine for offline demo)
+cp src/.env.example .env
+
+# 2. Start all services
 docker compose up --build
 ```
 
@@ -121,25 +144,44 @@ docker compose up --build
 ### Local Development
 
 ```bash
+# 1. Create and activate a Python virtual environment
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+# 2. Install backend dependencies
 pip install -r requirements.txt
-python -m pytest
+
+# 3. Start the backend
 uvicorn src.app.api.main:app --reload
+
+# 4. Install and start the frontend (separate terminal)
 cd src/web && npm install && npm run dev
 ```
+
+> For the full list of environment variables and troubleshooting, see [`docs/setup-guide.md`](docs/setup-guide.md).
+
+### Running Tests
+
+```bash
+python -m pytest
+```
+
+All 365 tests run offline — no network or credentials required.
 
 ### Preflight Check
 
 ```bash
-docker compose run --rm backend python scripts/preflight_demo.py
+python scripts/preflight_demo.py
+python scripts/preflight_demo.py --strict   # treat WARN as FAIL
 ```
+
+Expected output: `PREFLIGHT: OK -- safe to proceed with DEMO_MODE=true.`
 
 ## Demo
 
-**Live Demo:** [NEEDS INPUT: Demo URL or deployment link]  
-**Video Demo:** [NEEDS INPUT: YouTube or video link]  
-**Screenshots:** See `screenshots/` folder for crisis overview, rerouting, and cold-chain panels.
+**Live Demo:** NOT DEPLOYED — run locally using [`docs/setup-guide.md`](docs/setup-guide.md)
+**Video Demo:** See [`demo/demo-video-link.txt`](demo/demo-video-link.txt)
+**Screenshots:** See [`demo/screenshots/`](demo/screenshots/) for crisis overview, impact map, rerouting, cold-chain, action center, and evidence drawer panels.
 
 ## Known Limitations
 

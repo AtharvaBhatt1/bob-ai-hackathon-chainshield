@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DEMO_MODE=${DEMO_MODE:-true}
+      - WATSONX_ENABLED=${WATSONX_ENABLED:-false}
+      - NETWORK_REQUIRED=${NETWORK_REQUIRED:-false}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
