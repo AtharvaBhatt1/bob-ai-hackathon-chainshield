@@ -1,8 +1,8 @@
 # Submission metadata for ChainShield hackathon entry
 
 team:
-  name: " Chainsheild "
-  track: " AI "
+  name: Chainsheild
+  track:  "AI"
   lead:
     name: " Devanshi Shah "
     email: " 25dce107@charusat.edu.in "
@@ -102,7 +102,7 @@ submission:
     - No API keys or credentials in repository
     - Gitleaks scan performed before submission
 
-  repository_url: "[NEEDS INPUT: GitHub repository URL]"
+  repository_url: repository_url: "https://github.com/AtharvaBhatt1/bob-ai-hackathon-chainshield"
 
   video_demo_url: "[NEEDS INPUT: YouTube or video hosting URL]"
 
